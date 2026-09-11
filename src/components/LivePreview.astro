@@ -1,0 +1,67 @@
+---
+interface Props {
+	src: string;
+	title: string;
+	externalUrl: string;
+	fallbackImage?: string;
+	fallbackAlt?: string;
+	loading?: 'eager' | 'lazy';
+	showLink?: boolean;
+}
+
+const {
+	src,
+	title,
+	externalUrl,
+	fallbackImage,
+	fallbackAlt = `${title} project preview`,
+	loading = 'lazy',
+	showLink = true,
+} = Astro.props;
+---
+
+<div class="live-preview" data-preview data-state="loading">
+	<div class="live-preview__loading" data-preview-loading role="status" aria-live="polite">
+		<span class="live-preview__loading-line"></span>
+		<span>Loading live project</span>
+	</div>
+	<iframe
+		src={src}
+		title={title}
+		loading={loading}
+		allow="fullscreen"
+		referrerpolicy="strict-origin-when-cross-origin"
+	></iframe>
+	<div class="live-preview__fallback" data-preview-fallback hidden>
+		{fallbackImage ? <img src={fallbackImage} alt={fallbackAlt} loading="lazy" /> : <p>Live preview unavailable right now.</p>}
+		{showLink && <a href={externalUrl} target="_blank" rel="noreferrer">Open {title}</a>}
+	</div>
+</div>
+
+<script>
+	const previews = document.querySelectorAll<HTMLElement>('[data-preview]');
+
+	previews.forEach((preview) => {
+		const frame = preview.querySelector<HTMLIFrameElement>('iframe');
+		const loadingState = preview.querySelector<HTMLElement>('[data-preview-loading]');
+		const fallback = preview.querySelector<HTMLElement>('[data-preview-fallback]');
+		if (!frame || !loadingState || !fallback) return;
+
+		let ready = false;
+		const showReady = () => {
+			if (ready) return;
+			ready = true;
+			preview.dataset.state = 'ready';
+			loadingState.hidden = true;
+			fallback.hidden = true;
+		};
+
+		frame.addEventListener('load', showReady, { once: true });
+		window.setTimeout(() => {
+			if (ready) return;
+			preview.dataset.state = 'fallback';
+			loadingState.hidden = true;
+			fallback.hidden = false;
+		}, 9000);
+	});
+</script>

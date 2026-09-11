@@ -1,0 +1,53 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<header class="site-nav">
+	<div class="shell site-nav__inner">
+		<a class="site-nav__brand" href="/" aria-label="Suvodeep Ghosh home">
+			<span>Suvodeep Ghosh</span>
+			<span class="site-nav__brand-detail">Portfolio</span>
+		</a>
+
+		<button class="site-nav__menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-menu">
+			<span>Menu</span>
+		</button>
+
+		<nav id="primary-menu" class="site-nav__menu" aria-label="Primary navigation">
+			<a href="/#work">Work</a>
+			<a href="/archive">Archive</a>
+			<a href="/#about">About</a>
+			<a href="/#contact">Contact</a>
+			<ThemeToggle />
+		</nav>
+	</div>
+</header>
+
+<script>
+	const menuToggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+	const menu = document.querySelector<HTMLElement>('#primary-menu');
+
+	if (menuToggle && menu) {
+		const close = () => {
+			menu.removeAttribute('data-open');
+			menuToggle.setAttribute('aria-expanded', 'false');
+		};
+
+		menuToggle.addEventListener('click', () => {
+			const open = menu.hasAttribute('data-open');
+			if (open) close();
+			else {
+				menu.setAttribute('data-open', '');
+				menuToggle.setAttribute('aria-expanded', 'true');
+			}
+		});
+
+		menu.addEventListener('click', (event) => {
+			if (event.target instanceof HTMLAnchorElement) close();
+		});
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape') close();
+		});
+	}
+</script>

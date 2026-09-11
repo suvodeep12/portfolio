@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteNav from '../components/SiteNav.astro';
+import '../styles/archive.css';
+
+const archive = (await getCollection('projects'))
+	.filter((project) => project.data.placement === 'archive')
+	.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Archive | Suvodeep Ghosh" description="Older experiments and project origins from Suvodeep Ghosh.">
+	<SiteNav />
+	<main id="main-content" class="archive-page shell">
+		<header class="archive-header">
+			<p class="project-status">Archive</p>
+			<h1>Where the work started.</h1>
+			<p>Older experiments stay here when they explain a decision, a new direction, or a useful lesson.</p>
+		</header>
+
+		{archive.length > 0 ? (
+			<div class="archive-list">
+				{archive.map((project) => (
+					<a class="archive-row" href={`/projects/${project.data.slug}`}>
+						<span class="project-row__status">{project.data.status}</span>
+						<span>
+							<h2>{project.data.title}</h2>
+							<p>{project.data.summary}</p>
+						</span>
+						<span class="project-row__meta">Read project</span>
+					</a>
+				))}
+			</div>
+		) : (
+			<div class="archive-empty" role="status">The archive is empty for now.</div>
+		)}
+	</main>
+</BaseLayout>

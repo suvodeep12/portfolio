@@ -1,0 +1,14 @@
+---
+interface Props {
+	liveUrl?: string;
+	sourceUrl: string;
+	projectTitle: string;
+}
+
+const { liveUrl, sourceUrl, projectTitle } = Astro.props;
+---
+
+<div class="project-links" aria-label={`${projectTitle} links`}>
+	{liveUrl && <a class="button" href={liveUrl} target="_blank" rel="noreferrer">Open live project</a>}
+	<a class="button button--quiet" href={sourceUrl} target="_blank" rel="noreferrer">View source</a>
+</div>

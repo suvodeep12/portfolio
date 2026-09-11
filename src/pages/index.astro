@@ -1,0 +1,109 @@
+---
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LivePreview from '../components/LivePreview.astro';
+import SiteNav from '../components/SiteNav.astro';
+import '../styles/home.css';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const solar = projects.find((project) => project.data.slug === 'solar');
+const glimmer = projects.find((project) => project.data.slug === 'glimmer');
+const selectedWork = projects.filter((project) => project.data.slug === 'rift-herald' || project.data.slug === 'gw2-optimal-lister');
+
+if (!solar || !glimmer) throw new Error('Solar and GLIMMER are required homepage projects.');
+---
+
+<BaseLayout>
+	<SiteNav />
+	<main id="main-content">
+		<section class="hero shell" aria-labelledby="hero-title">
+			<div class="hero__copy" data-reveal>
+				<p class="eyebrow">Suvodeep Ghosh</p>
+				<h1 id="hero-title">Software you can try.</h1>
+				<p class="hero__summary">I build full-stack products and interactive tools that make complex systems feel immediate.</p>
+				<div class="actions">
+					<a class="button" href="#work">See the projects</a>
+					<a class="button button--quiet" href={solar.data.liveUrl} target="_blank" rel="noreferrer">Open Solar</a>
+				</div>
+			</div>
+			<div class="hero__media">
+				<LivePreview
+					src={solar.data.liveUrl!}
+					title="Solar live project preview"
+					externalUrl={solar.data.liveUrl!}
+					fallbackImage={solar.data.fallbackImage}
+					fallbackAlt={solar.data.fallbackAlt}
+					loading="eager"
+				/>
+			</div>
+		</section>
+
+		<section class="live-feature shell" aria-labelledby="glimmer-title" data-reveal>
+			<div class="live-feature__media">
+				<LivePreview
+					src={glimmer.data.liveUrl!}
+					title="GLIMMER live project preview"
+					externalUrl={glimmer.data.liveUrl!}
+					loading="lazy"
+				/>
+			</div>
+			<div>
+				<p class="live-feature__status">In progress</p>
+				<h2 id="glimmer-title">{glimmer.data.title}</h2>
+				<p>{glimmer.data.summary}</p>
+				<a class="button button--quiet" href={`/projects/${glimmer.data.slug}`}>Read the build</a>
+			</div>
+		</section>
+
+		<section class="work-section shell" id="work" aria-labelledby="work-title" data-reveal>
+			<div class="section-heading">
+				<h2 id="work-title">Useful systems, real constraints.</h2>
+				<p>Two projects built around specific communities and workflows.</p>
+			</div>
+			<div class="project-list">
+				{selectedWork.map((project) => (
+					<a class="project-row" href={`/projects/${project.data.slug}`}>
+						<span class="project-row__status">{project.data.status}</span>
+						<span>
+							<h3>{project.data.title}</h3>
+							<p>{project.data.summary}</p>
+						</span>
+						<span class="project-row__meta">Read project</span>
+					</a>
+				))}
+			</div>
+		</section>
+
+		<section class="progression shell" aria-label="Project progression" data-reveal>
+			<a class="progression__item" href="/projects/threejs-project">
+				<h3>ThreeJS-project</h3>
+				<p>A learning experiment that eventually pointed toward Solar.</p>
+			</a>
+			<a class="progression__item" href="/projects/solar">
+				<h3>Solar</h3>
+				<p>The experiment grew into a real-time system with data, controls, and tests.</p>
+			</a>
+		</section>
+
+		<section class="about-section shell" id="about" aria-labelledby="about-title" data-reveal>
+			<div>
+				<h2 id="about-title">I like software that responds.</h2>
+			</div>
+			<div class="about-section__copy">
+				<p>I build products, tools, and experiments across the browser, desktop, and community spaces they serve.</p>
+				<div class="about-section__links">
+					<a href="https://github.com/suvodeep12" target="_blank" rel="noreferrer">GitHub</a>
+				</div>
+			</div>
+		</section>
+
+		<section class="contact-section shell" id="contact" aria-labelledby="contact-title" data-reveal>
+			<div>
+				<h2 id="contact-title">Want to talk about a build?</h2>
+				<p>For work, collaboration, or a good technical problem.</p>
+			</div>
+			<a class="contact-section__link" href="https://www.linkedin.com/in/suvodeepghosh" target="_blank" rel="noreferrer">Message on LinkedIn</a>
+		</section>
+	</main>
+</BaseLayout>

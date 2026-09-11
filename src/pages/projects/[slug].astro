@@ -1,0 +1,58 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectLinks from '../../components/ProjectLinks.astro';
+import ProjectMedia from '../../components/ProjectMedia.astro';
+import RelatedProjects from '../../components/RelatedProjects.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import '../../styles/project-pages.css';
+
+type Props = {
+	project: CollectionEntry<'projects'>;
+	relatedProjects: CollectionEntry<'projects'>[];
+};
+
+export async function getStaticPaths() {
+	const projects = await getCollection('projects');
+	return projects.map((project) => ({
+		params: { slug: project.data.slug },
+		props: {
+			project,
+			relatedProjects: projects.filter((candidate) => project.data.related.includes(candidate.data.slug)),
+		},
+	}));
+}
+
+const { project, relatedProjects } = Astro.props as Props;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={`${project.data.title} | Suvodeep Ghosh`} description={project.data.summary}>
+	<SiteNav />
+	<main id="main-content" class="project-page">
+		<header class="project-header shell">
+			<div>
+				<p class="project-status">{project.data.status}</p>
+				<h1>{project.data.title}</h1>
+				<p class="project-summary">{project.data.summary}</p>
+			</div>
+			<ProjectLinks
+				liveUrl={project.data.liveUrl}
+				sourceUrl={project.data.sourceUrl}
+				projectTitle={project.data.title}
+			/>
+		</header>
+
+		<section class="project-hero shell" aria-label={`${project.data.title} preview`}>
+			<ProjectMedia project={project} />
+		</section>
+
+		<article class="project-content shell">
+			<Content />
+		</article>
+
+		<div class="shell">
+			<RelatedProjects projects={relatedProjects} />
+		</div>
+	</main>
+</BaseLayout>

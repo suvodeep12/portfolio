@@ -1,0 +1,27 @@
+<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+	<span class="theme-toggle__label">Theme</span>
+	<span data-theme-value>Dark</span>
+</button>
+
+<script>
+	const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+	const value = document.querySelector<HTMLElement>('[data-theme-value]');
+
+	if (button && value) {
+		const update = () => {
+			const theme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+			button.setAttribute('aria-pressed', String(theme === 'light'));
+			button.setAttribute('aria-label', `Use ${theme === 'light' ? 'dark' : 'light'} theme`);
+			value.textContent = theme === 'light' ? 'Light' : 'Dark';
+		};
+
+		button.addEventListener('click', () => {
+			const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+			document.documentElement.dataset.theme = next;
+			localStorage.setItem('theme', next);
+			update();
+		});
+
+		update();
+	}
+</script>

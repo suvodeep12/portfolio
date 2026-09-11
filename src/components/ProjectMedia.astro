@@ -1,0 +1,39 @@
+---
+import LivePreview from './LivePreview.astro';
+
+interface Props {
+	project: {
+		data: {
+			title: string;
+			preview: 'live' | 'image' | 'none';
+			liveUrl?: string;
+			sourceUrl: string;
+			fallbackImage?: string;
+			fallbackAlt?: string;
+		};
+	};
+}
+
+const { project } = Astro.props;
+const { data } = project;
+---
+
+{data.preview === 'live' && data.liveUrl ? (
+	<LivePreview
+		src={data.liveUrl}
+		title={`${data.title} live project preview`}
+		externalUrl={data.liveUrl}
+		fallbackImage={data.fallbackImage}
+		fallbackAlt={data.fallbackAlt}
+		loading="eager"
+		showLink={false}
+	/>
+) : data.preview === 'image' && data.fallbackImage ? (
+	<figure class="project-media project-media--image">
+		<img src={data.fallbackImage} alt={data.fallbackAlt ?? `${data.title} interface preview`} loading="eager" />
+	</figure>
+) : (
+	<div class="project-media project-media--none" role="status">
+		<p>This project has no browser preview.</p>
+	</div>
+)}

@@ -1,0 +1,21 @@
+---
+interface Props {
+	projects: Array<{ data: { title: string; slug: string; summary: string } }>;
+}
+
+const { projects } = Astro.props;
+---
+
+{projects.length > 0 && (
+	<section class="related-projects" aria-labelledby="related-title">
+		<h2 id="related-title">Related work</h2>
+		<div class="related-projects__list">
+			{projects.map((project) => (
+				<a href={`/projects/${project.data.slug}`}>
+					<span>{project.data.title}</span>
+					<small>{project.data.summary}</small>
+				</a>
+			))}
+		</div>
+	</section>
+)}
