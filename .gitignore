@@ -22,3 +22,18 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Local AI/agent instructions and planning artifacts
+AGENTS.md
+CLAUDE.md
+CODEX.md
+GEMINI.md
+.agents/
+.aider/
+.claude/
+.codex/
+.cursor/
+.windsurf/
+docs/agents/
+docs/superpowers/
+.github/copilot-instructions.md
